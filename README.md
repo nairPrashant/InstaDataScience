@@ -1,6 +1,26 @@
 # InstaDataScience
  Practicing Data Science using Instacart Public data.
 
+## Key Features
+* 3 million grocery orders 
+* more than 200,000 Instacart users
+* For each user,between 4 and 100 of their orders are provided, with the sequence of products purchased in each order. Also the week and hour of day the order was placed, and a relative measure of time between orders are provided.
+* 49688 PRODUCTS
+* 21 DEPARTMENTS
+* 134 AISLES
+
+Also Refer:
+
+https://tech.instacart.com/3-million-instacart-orders-open-sourced-d40d29ead6f2
+
+S3 link:
+https://www.instacart.com/datasets/grocery-shopping-2017
+
+Data dictionary:
+https://gist.github.com/jeremystan/c3b39d947d9b88b3ccff3147dbcf6c6b
+
+
+
 ### Data Dictionary
 Here is a description of all datsets made available by Instacart.
 #### products (50k rows)	

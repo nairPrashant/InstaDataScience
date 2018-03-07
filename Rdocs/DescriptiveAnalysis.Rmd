@@ -122,7 +122,7 @@ There is a clear effect of hour of day on order volume. Most orders are between 
 ```{r warning=FALSE}
 orders %>% 
   ggplot(aes(x=order_hour_of_day)) + 
-  geom_histogram(stat="count",fill="red")
+  geom_histogram(stat="count",fill="sienna2")
 ```
 
 #### Day of Week
@@ -133,7 +133,7 @@ info regarding which values represent which day, but one would assume that this 
 
 orders %>% 
   ggplot(aes(x=order_dow)) + 
-  geom_histogram(stat="count",fill="red")
+  geom_histogram(stat="count",fill="olivedrab4")
 ```
 
 
@@ -142,7 +142,7 @@ People seem to order more often after exactly 1 week.
 ```{r warning=FALSE}
 orders %>% 
   ggplot(aes(x=days_since_prior_order)) + 
-  geom_histogram(stat="count",fill="red")
+  geom_histogram(stat="count",fill="navyblue")
 ```
 
 ### How many prior orders are there?
@@ -189,7 +189,7 @@ Let's have a look which products are sold most often (top10). And the clear winn
 tmp <- order_products %>% 
   group_by(product_id) %>% 
   summarize(count = n()) %>% 
-  top_n(20, wt = count) %>%
+  top_n(10, wt = count) %>%
   left_join(select(products,product_id,product_name),by="product_id") %>%
   arrange(desc(count)) 
 kable(tmp)
@@ -197,7 +197,7 @@ pn1<-tmp$product_name
 
 tmp %>% 
   ggplot(aes(x=reorder(product_name,-count), y=count))+
-  geom_bar(stat="identity",fill="red")+
+  geom_bar(stat="identity",fill="deeppink4")+
   theme(axis.text.x=element_text(angle=90, hjust=1),axis.title.x = element_blank())
 
 ```
@@ -210,7 +210,7 @@ tmp2 <- orders %>%
   summarize(count2 = n()) %>% 
   left_join(select(products,product_id,product_name,department_id),by="product_id") %>%
   #filter(department_id != 4 & department_id != 16) %>% 
-  top_n(20, wt = count2) %>%  
+  top_n(10, wt = count2) %>%  
   arrange(desc(count2))
 
 kable(tmp2)
@@ -255,7 +255,7 @@ kable(tmp)
 
 tmp %>% 
   ggplot(aes(x=reorder(product_name,-proportion_reordered), y=proportion_reordered))+
-  geom_bar(stat="identity",fill="red")+
+  geom_bar(stat="identity",fill="brown3")+
   theme(axis.text.x=element_text(angle=90, hjust=1),axis.title.x = element_blank())+coord_cartesian(ylim=c(0.85,0.95))
 ```
 
@@ -278,7 +278,7 @@ kable(tmp)
 
 tmp %>% 
   ggplot(aes(x=reorder(product_name,-pct), y=pct))+
-  geom_bar(stat="identity",fill="red")+
+  geom_bar(stat="identity",fill="brown3")+
   theme(axis.text.x=element_text(angle=90, hjust=1),axis.title.x = element_blank())+coord_cartesian(ylim=c(0.4,0.7))
 
 ```
@@ -292,7 +292,7 @@ order_products %>%
   group_by(days_since_prior_order) %>%
   summarize(mean_reorder = mean(reordered)) %>%
   ggplot(aes(x=days_since_prior_order,y=mean_reorder))+
-  geom_bar(stat="identity",fill="cyan")
+  geom_bar(stat="identity",fill="sienna3")
 ```
 
 
@@ -305,7 +305,7 @@ order_products %>%
   summarize(proportion_reordered = mean(reordered), n=n()) %>%
   ggplot(aes(x=n,y=proportion_reordered))+
   geom_point()+
-  geom_smooth(color="red")+
+  geom_smooth(color="green4")+
   coord_cartesian(xlim=c(0,2000))
 
 ```
@@ -388,7 +388,7 @@ treemap(tmp2,
         index=c("department","aisle"),
         vSize="onesize",
         vColor="department",
-        palette="Set3",
+        palette="Set2",
         title="How are aisles organized within departments?",
         sortID="-sumcount", 
         border.col="#FFFFFF",
@@ -466,8 +466,6 @@ tmp2 <- order_products %>%
 
 datatable(select(tmp2,-aisle_id,-department_id,-organic), style="bootstrap", class="table-condensed", options = list(dom = 't'))
 ```
-
-**Tadaaaa. Prediction 100% correct.**
 
 <br><br>
 

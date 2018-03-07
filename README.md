@@ -9,21 +9,17 @@
 * 21 DEPARTMENTS
 * 134 AISLES
 
-Also Refer:
+Also Refer: https://tech.instacart.com/3-million-instacart-orders-open-sourced-d40d29ead6f2
 
-https://tech.instacart.com/3-million-instacart-orders-open-sourced-d40d29ead6f2
+S3 link: https://www.instacart.com/datasets/grocery-shopping-2017
 
-S3 link:
-https://www.instacart.com/datasets/grocery-shopping-2017
-
-Data dictionary:
-https://gist.github.com/jeremystan/c3b39d947d9b88b3ccff3147dbcf6c6b
+Data dictionary: https://gist.github.com/jeremystan/c3b39d947d9b88b3ccff3147dbcf6c6b
 
 
 
 ### Data Dictionary
 Here is a description of all datsets made available by Instacart.
-#### products (50k rows)	
+#### 1. products (50k rows)	
 
 Name | Description
 --- | --- 
@@ -32,21 +28,21 @@ product_name | name of the product
 aisle_id | foreign key
 department_id | foreign key
 
-#### aisles (134 rows)	
+#### 2. aisles (134 rows)	
 
 Name | Description
 --- | --- 
 aisle_id | aisle identifier
 aisle | the name of the aisle
 
-####  departments (21 rows)
+#### 3. departments (21 rows)
 
 Name | Description
 --- | --- 
 department_id | department identifier
 department | the name of the department
 	
-####  order_products__SET (30m+ rows)	
+#### 4. order_products__SET (30m+ rows)	
 
 Name | Description
 --- | --- 
@@ -55,7 +51,7 @@ product_id | foreign key
 add_to_cart_order | order in which each product was added to cart
 reordered | 1 if this product has been ordered by this user in the past, 0 otherwise
 	
-####  where SET is one of the four following evaluation sets (eval_set in orders)	
+#####  where SET is one of the four following evaluation sets (eval_set in orders)	
 
 Name | Description
 --- | --- 

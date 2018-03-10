@@ -1,0 +1,162 @@
+---
+title: "InstaCart Market Basket Analysis"
+author: "Prashant Nair"
+date: "01 March 2018"
+output:
+  html_document:
+    fig_height: 4
+    fig_width: 7
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###                                AFFINITY ANALYSIS 
+
+### Understanding Market Basket Analysis / Assosiation rule mining 
+
+MBA allows us to identify items that are frequently bought together.Typically the output of an MBA is in  the form of rules. The rules can be simple {A ==> B}, when a customer buys item A then it is (very) likely that the customer buys item B. More complex rules are also possible {A, B ==> D, F}, when a customer buys items A and B then it is likely that he buys items D and F.
+
+### Read in the data  
+###  Note : Input in some sample data in case the processing and memory is low 
+
+```{r message=FALSE, warning=FALSE, results='hide'}
+library(data.table)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(stringr)
+library(DT)
+library(arules)
+library(arulesViz)
+library(plotly)
+library(visNetwork)
+library(igraph)
+
+aisles <- fread('./dataForR/aisles.csv')
+departments <- fread('./dataForR/departments.csv')
+order_products_prior <- fread('./dataForR/order_products__prior.csv',nrows=20000) #Needed
+order_products_train <- fread('./dataForR/order_products__train.csv')
+orders <- fread('./dataForR/orders.csv')
+products <- fread('./dataForR/products.csv')    # Needed 
+```
+
+### Data Preparation , Creating a customers shopping basket 
+
+```{r, message=FALSE,warning=FALSE,}
+# get the shopping baskets
+order_baskets <- order_products_prior %>% 
+  inner_join(products, by="product_id") %>% 
+  group_by(order_id) %>%
+  summarise(basket = as.vector(list(product_name)))
+
+# compute transactions
+transactions <- as(order_baskets$basket, "transactions")
+```
+### Frequent Itemsets 
+```{r, fig.height=8}
+###   Frequent Item Sets #####
+support <- 0.008
+itemsets <- apriori(transactions, parameter = list(target = "frequent itemsets", supp=support, minlen=2), control = list(verbose = FALSE))
+
+par(mar=c(5,18,2,2)+.1)
+sets_order_supp <- DATAFRAME(sort(itemsets, by="support", decreasing = F))
+barplot(sets_order_supp$support, names.arg=sets_order_supp$items, xlim=c(0,0.02), horiz = T, las = 2, cex.names = .8, main = "Frequent Itemsets", col="blue")
+mtext(paste("support:",support), padj = .8)
+```
+
+### Association Rules
+
+### Setting the Support and Confidence Intervals.
+
+### What is support?
+
+A value of Support =0.02 means that an item will be considered as frequent if at 
+least 2 percent of all the baskets contain it. 
+
+### What is Confidence?
+
+confidence is a measure of the strength of an association rule. It is the frequency of occurrence of the right-hand items in the rule from among those baskets that contain the items on the left-hand side of the rule.
+
+### Rule1 : 
+using  a low support threshold to generate strong rules even for items that are less frequent
+
+```{r, message=FALSE, warning=FALSE}
+#3006775 rules
+
+rules1 <- apriori(transactions, parameter = list(supp = 0.0000001, conf = 0.01, maxlen=3), control = list(verbose = FALSE))
+
+plotly_arules(rules1)
+```
+### Rule 2 : 
+
+```{r, message=FALSE, warning=FALSE}
+rules <- apriori(transactions, parameter = list(supp =  0.003269976, conf = 0.01, maxlen=3), control = list(verbose = FALSE))
+
+plotly_arules(rules)
+```
+
+### Rule 3: 
+
+```{r, message=FALSE, warning=FALSE}
+#PLOT 4
+rules2 <- apriori(transactions, parameter = list(supp = 0.001, conf = 0.4, maxlen=3), control = list(verbose = FALSE))
+inspect(sort(rules2, by="lift")[1:10])
+```
+
+
+## Rule 4 : High Confidence and less support 
+
+```{r, message=FALSE, warning=FALSE}
+#PLOT 5
+rules3 <- apriori(transactions, parameter = list(supp = 0.005, conf = 0.1, maxlen=3), control = list(verbose = FALSE))
+inspect(sort(rules3, by="lift")[1:10])
+
+```
+
+
+### Graph Analysis for rules  
+
+### The rules obtained from association mining form a network graph.
+Node : Each product in the customer shopping 
+Edge : each rule "from ==> to" is an edge of the graph
+
+
+```{r, message=FALSE}
+# uses rules2 top 10 by lift PLOT 4
+subrules2 <- head(sort(rules3, by="confidence"),10)
+ig <- plot( subrules2, method="graph", control=list(type="items") )
+
+ig_df <- get.data.frame( ig, what = "both" )
+nodesv <- data.frame(
+  id = ig_df$vertices$name
+  ,value = ig_df$vertices$lift # could change to lift or confidence
+  ,title = ifelse(ig_df$vertices$label == "",ig_df$vertices$name, ig_df$vertices$label)
+  ,ig_df$vertices
+) 
+
+edgesV = ig_df$edges
+
+```
+
+### Network graph visualization Part 2
+
+```{r, message=FALSE}
+visNetwork(nodes = nodesv, edges = edgesV, width = 900, height = 700) %>%
+  visNodes(size = 10) %>%
+  visLegend() %>%
+  visEdges(smooth = FALSE) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+  visInteraction(navigationButtons = TRUE) %>%
+  visEdges(arrows = 'from') %>%
+  visPhysics(
+    solver = "barnesHut",
+    maxVelocity = 35,
+    forceAtlas2Based = list(gravitationalConstant = -6000)
+  )
+```
+
+
+

@@ -1,5 +1,16 @@
 # InstaDataScience
  Practicing Data Science using Instacart Public data.
+ This project is created as a requirement for completion of Advanced Programme in Data Sciences, Indian Institute of Management, Calcutta.
+ 
+ Here are the details of the Project Group:
+ * Anurag Pandey, anuragpandey2489@gmail.com
+ * Prashant Nair, prash.nair26@gmail.com
+ * Rajiv Ranjan, rajiv.ranjan.liveindia@gmail.com
+ * Shaveta Sachdeva, sachdeva.shaveta@gmail.com
+ * Sonia Grewal, soniagrewal17@gmail.com
+ * Sunil K Gupta, skg467@gmail.com
+ * Vikas Kumar Rana, vkumarcsc95@gmail.com
+
 
 ## Key Features
 * 3 million grocery orders 
